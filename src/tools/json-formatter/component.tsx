@@ -50,6 +50,26 @@ export default function JsonFormatter() {
     setError(null);
   };
 
+  const handlePrettify = () => {
+    if (!input.trim()) {
+      toast.error("Please enter some JSON first.");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(input);
+      const space = indent === "tab" ? "\t" : parseInt(indent, 10);
+      const formatted = JSON.stringify(parsed, null, space);
+      setOutput(formatted);
+      setError(null);
+      toast.success("JSON Prettified!");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg || "Invalid JSON structure.");
+      toast.error("Failed to prettify. Invalid JSON.");
+    }
+  };
+
   const handleMinify = () => {
     if (!input.trim()) {
       toast.error("Please enter some JSON first.");
@@ -372,6 +392,10 @@ export default function JsonFormatter() {
 
       {/* Compression Action buttons */}
       <div className="flex flex-wrap gap-3 mt-2">
+        <Button onClick={handlePrettify} variant="default" className="flex-1 sm:flex-initial">
+          <Sparkles className="mr-1.5 h-4 w-4" />
+          Prettify JSON
+        </Button>
         <Button onClick={handleMinify} variant="secondary" className="flex-1 sm:flex-initial">
           <RefreshCw className="mr-1.5 h-4 w-4" />
           Minify JSON

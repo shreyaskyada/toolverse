@@ -143,7 +143,7 @@ export default function ClientHome({ tools, categories }: ClientHomeProps) {
         <div className="text-center py-20 text-muted-foreground border border-dashed border-border rounded-lg">
           <Search className="h-10 w-10 mx-auto opacity-35 mb-2" />
           <p className="text-base">No tools match your query: &quot;{searchQuery}&quot;</p>
-          <button onClick={() => setSearchQuery("")} className="text-xs text-primary font-medium underline mt-1 hover:text-primary/80">
+          <button onClick={() => setSearchQuery("")} className="text-xs text-primary font-medium underline mt-1 hover:text-primary/80 cursor-pointer">
             Clear search filter
           </button>
         </div>
