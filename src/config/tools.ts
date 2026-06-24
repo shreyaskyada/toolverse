@@ -21,6 +21,12 @@ export const tools: Tool[] = [
     description: "Decode, inspect, and verify JSON Web Tokens (JWT) instantly.",
     category: "developer-tools",
     featured: true,
-    fullWidth: true,
+  },
+  {
+    slug: "jwt-generator",
+    title: "JWT Generator",
+    description: "Generate and sign JSON Web Tokens (JWT) client-side instantly.",
+    category: "developer-tools",
+    featured: true,
   },
 ];

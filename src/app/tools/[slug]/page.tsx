@@ -37,6 +37,7 @@ const toolComponents: Record<string, React.ComponentType> = {
     () => import("../../../tools/uuid-generator/component"),
   ),
   "jwt-decoder": dynamic(() => import("../../../tools/jwt-decoder/component")),
+  "jwt-generator": dynamic(() => import("../../../tools/jwt-generator/component")),
 };
 
 export default async function ToolPage({ params }: Props) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -377,15 +377,28 @@ export default function JwtDecoder() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Focus on entry
+  // Focus on entry and load URL parameters on mount
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get("token");
+      const urlKey = params.get("key");
+      if (urlToken) {
+        setToken(urlToken);
+        toast.success("Imported token from URL!");
+      }
+      if (urlKey) {
+        setSecretOrKey(urlKey);
+      }
+    }
   }, []);
 
   // Parse Token
-  const decoded = parseJwt(token);
+  const decoded = useMemo(() => parseJwt(token), [token]);
 
   // Clear all states
   const handleClear = () => {
