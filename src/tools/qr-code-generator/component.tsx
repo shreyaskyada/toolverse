@@ -60,6 +60,12 @@ function RangeSlider({ min, max, step, value, onChange, minLabel, maxLabel }: Ra
 // ------------------------------------------------------------------
 // ColorPicker Component
 // ------------------------------------------------------------------
+const PRESET_COLORS = [
+  "#000000", "#FFFFFF", "#EF4444", "#F97316", "#F59E0B", 
+  "#84CC16", "#22C55E", "#06B6D4", "#3B82F6", "#6366F1", 
+  "#D946EF", "#F43F5E"
+];
+
 const ColorPicker = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
   <div className="flex flex-col gap-2">
     <label className="text-xs font-bold text-muted-foreground">{label}</label>
@@ -67,12 +73,36 @@ const ColorPicker = ({ label, value, onChange }: { label: string, value: string,
       <Popover>
         <PopoverTrigger
           type="button"
-          className="absolute left-1.5 h-7 w-7 rounded border border-border/50 shadow-xs overflow-hidden shrink-0 z-10 cursor-pointer transition-transform hover:scale-105"
+          className="absolute left-1.5 h-7 w-7 rounded-sm border border-border/80 shadow-sm overflow-hidden shrink-0 z-10 cursor-pointer transition-all hover:scale-110 active:scale-95"
           style={{ backgroundColor: value }}
           title="Pick a color"
         />
-        <PopoverContent className="w-auto p-3" align="start">
-          <HexColorPicker color={value} onChange={onChange} />
+        <PopoverContent 
+          className="w-auto p-4 flex flex-col gap-4 rounded-xl shadow-xl border-border/80" 
+          align="start" 
+          sideOffset={12}
+        >
+          <div className="overflow-hidden rounded-lg border border-border/40 shadow-sm ring-1 ring-black/5 dark:ring-white/5">
+            <HexColorPicker color={value} onChange={onChange} />
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Presets</span>
+            <div className="grid grid-cols-6 gap-2">
+              {PRESET_COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`h-6 w-6 rounded-md shadow-xs border transition-all hover:scale-110 active:scale-95 ${
+                    value.toUpperCase() === c ? "border-primary ring-2 ring-primary/30" : "border-border/60 hover:border-border"
+                  }`}
+                  style={{ backgroundColor: c }}
+                  onClick={() => onChange(c)}
+                  title={c}
+                />
+              ))}
+            </div>
+          </div>
         </PopoverContent>
       </Popover>
       <Input 
@@ -82,7 +112,7 @@ const ColorPicker = ({ label, value, onChange }: { label: string, value: string,
           const val = e.target.value;
           onChange(val);
         }}
-        className="h-10 pl-11 font-mono text-sm uppercase bg-background"
+        className="h-10 pl-11 font-mono text-sm uppercase bg-background shadow-xs transition-colors focus-visible:ring-1 focus-visible:border-primary"
         maxLength={7}
       />
     </div>
