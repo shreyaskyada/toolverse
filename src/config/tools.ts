@@ -72,4 +72,12 @@ export const tools: Tool[] = [
     featured: true,
     fullWidth: true,
   },
+  {
+    slug: "image-compressor",
+    title: "Image Compressor",
+    description: "Reduce image file size by customizing quality, scaling dimensions, and converting formats client-side instantly.",
+    category: "image-tools",
+    featured: true,
+    fullWidth: true,
+  },
 ];

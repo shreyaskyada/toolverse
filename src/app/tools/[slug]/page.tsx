@@ -43,6 +43,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "timezone-converter": dynamic(() => import("../../../tools/timezone-converter/component")),
   "word-counter": dynamic(() => import("../../../tools/word-counter/component")),
   "case-converter": dynamic(() => import("../../../tools/case-converter/component")),
+  "image-compressor": dynamic(() => import("../../../tools/image-compressor/component")),
 };
 
 export default async function ToolPage({ params }: Props) {

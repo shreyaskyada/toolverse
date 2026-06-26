@@ -19,6 +19,12 @@ export const categories: Category[] = [
     icon: "FileText",
   },
   {
+    id: "image-tools",
+    name: "Image Tools",
+    description: "Compress, resize, and convert image formats client-side instantly.",
+    icon: "Image",
+  },
+  {
     id: "design-color",
     name: "Design & Color",
     description: "Color converters, generators, and styling tools.",
