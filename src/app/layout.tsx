@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/layout/Header";
+import Subheader from "@/components/layout/Subheader";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
+          <Subheader />
           <main className="flex-1 flex flex-col">{children}</main>
           <Footer />
           <Toaster />

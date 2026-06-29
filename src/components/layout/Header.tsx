@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Wrench, Sparkles } from "lucide-react";
+import { Sun, Moon, Wrench, Sparkles, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { categories } from "@/config/categories";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,13 +17,31 @@ import {
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handle = requestAnimationFrame(() => {
       setMounted(true);
     });
-    return () => cancelAnimationFrame(handle);
-  }, []);
+    
+    // Global Cmd+K shortcut
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        // If we are not on the home page, we shouldn't necessarily prevent default unless we navigate,
+        // but let's navigate to home page if they press Cmd+K
+        if (window.location.pathname !== "/") {
+          e.preventDefault();
+          router.push("/");
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    
+    return () => {
+      cancelAnimationFrame(handle);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [router]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
@@ -51,7 +70,7 @@ export default function Header() {
                 {categories.map((category) => (
                   <DropdownMenuItem key={category.id} className="p-0">
                     <Link
-                      href={`/#${category.id}`}
+                      href={`/category/${category.id}`}
                       className="flex items-center gap-2 w-full px-1.5 py-1"
                     >
                       <span>{category.name}</span>
@@ -64,7 +83,9 @@ export default function Header() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+
+
           {/* Theme Toggle */}
           {mounted && (
             <Button

@@ -1,28 +1,80 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Tool } from "@/types/tool";
 import { Category } from "@/config/categories";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Code, FileText, Palette, Calculator, Search, ArrowRight, Sparkles } from "lucide-react";
+import { Search, Sparkles, TrendingUp, Clock, Grid, Zap } from "lucide-react";
+import ToolCard from "@/components/tools/ToolCard";
+import CategoryCard from "@/components/tools/CategoryCard";
+import { useSearchParams } from "next/navigation";
 
 interface ClientHomeProps {
   tools: Tool[];
   categories: Category[];
 }
 
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Code,
-  FileText,
-  Palette,
-  Calculator,
-};
-
 export default function ClientHome({ tools, categories }: ClientHomeProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Sync search query if URL changes
+  useEffect(() => {
+    setSearchQuery(searchParams.get("q") || "");
+  }, [searchParams]);
+
+  // Animated Placeholder State
+  const placeholders = useMemo(
+    () => [
+      "Search 'JSON formatter'...",
+      "Search 'Image compressor'...",
+      "Search 'UUID generator'...",
+      "Search 'JWT decoder'...",
+      "Search 'Color converter'...",
+    ],
+    [],
+  );
+
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    const currentString = placeholders[placeholderIndex];
+
+    if (isDeleting) {
+      timer = setTimeout(() => {
+        setDisplayText((prev) => prev.slice(0, -1));
+        if (displayText.length <= 1) {
+          setIsDeleting(false);
+          setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+        }
+      }, 30);
+    } else {
+      timer = setTimeout(() => {
+        setDisplayText(currentString.slice(0, displayText.length + 1));
+        if (displayText.length >= currentString.length) {
+          timer = setTimeout(() => setIsDeleting(true), 2000);
+        }
+      }, 70);
+    }
+
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, placeholderIndex, placeholders]);
+
+  // Keyboard shortcut to focus search (Cmd/Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const filteredTools = tools.filter((tool) => {
     const query = searchQuery.toLowerCase();
@@ -33,119 +85,199 @@ export default function ClientHome({ tools, categories }: ClientHomeProps) {
     );
   });
 
+  const getToolsByCategory = (categoryId: string) => {
+    return tools.filter((t) => t.category === categoryId);
+  };
+
+  const featuredTools = tools.filter((t) => t.featured).slice(0, 4);
+  const trendingTools = tools.slice(4, 8);
+
+  const handleSuggestionClick = (query: string) => {
+    setSearchQuery(query);
+    inputRef.current?.focus();
+  };
+
   return (
-    <div className="flex flex-col gap-10">
-      {/* Hero Header */}
-      <div className="flex flex-col items-center text-center gap-4 max-w-3xl mx-auto py-10">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
-          <Sparkles className="h-3 w-3" />
-          <span>All utilities run locally in your browser</span>
+    <div className="flex flex-col gap-16 pb-10">
+      {/* Hero Search Section */}
+      <div className="flex flex-col items-center text-center gap-6 max-w-4xl mx-auto pt-10 md:pt-20 px-4 w-full">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border/50 text-sm font-medium text-muted-foreground mb-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span>Your all-in-one workspace</span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
-          Free Online Developer Tools
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70 leading-tight">
+          100+ Developer & Content Tools,
+          <br /> All In One Place.
         </h1>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          Clean, private, and instant tools. Your data is processed entirely client-side and never saved or sent to any server.
+        <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+          Format JSON, convert images, generate UUIDs, and more—instantly,
+          securely, and completely in your browser.
         </p>
 
-        {/* Search Input */}
-        <div className="relative w-full max-w-lg mt-4 shadow-sm">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tools (e.g. JSON Formatter, UUID)..."
-            className="pl-10 h-11 rounded-lg border-border focus-visible:ring-primary focus-visible:ring-1"
-          />
-        </div>
-      </div>
-
-      {/* Featured Tools (Only shown when not searching) */}
-      {!searchQuery && (
-        <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-bold tracking-tight">Featured Utilities</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {tools
-              .filter((t) => t.featured)
-              .map((tool) => (
-                <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group">
-                  <Card className="h-full border border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all duration-300">
-                    <CardHeader className="flex flex-row justify-between items-start gap-4">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <CardTitle className="text-lg font-bold group-hover:text-primary transition-colors">
-                            {tool.title}
-                          </CardTitle>
-                          <Badge variant="default" className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0">
-                            Featured
-                          </Badge>
-                        </div>
-                        <CardDescription className="text-muted-foreground text-sm leading-relaxed">
-                          {tool.description}
-                        </CardDescription>
-                      </div>
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-card text-foreground group-hover:text-primary transition-colors">
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              ))}
+        {/* Large Raycast-style Search Bar */}
+        <div className="relative w-full max-w-2xl mt-6 group">
+          <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-3xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+          <div className="relative flex items-center bg-card border-2 border-border/60 hover:border-border focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10 rounded-2xl shadow-sm transition-all duration-300">
+            <Search className="absolute left-5 h-6 w-6 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={searchQuery ? "" : displayText}
+              className="w-full h-16 pl-14 pr-16 bg-transparent border-none outline-none text-lg text-foreground placeholder:text-muted-foreground/60 rounded-2xl"
+            />
+            <div className="absolute right-4 flex items-center gap-1 opacity-50">
+              <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </div>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 text-xs font-semibold bg-muted text-muted-foreground px-2 py-1 rounded-md hover:bg-muted-foreground/20 transition-colors"
+              >
+                ESC
+              </button>
+            )}
           </div>
         </div>
-      )}
 
-      {/* Category List */}
-      <div className="flex flex-col gap-12 mt-4">
-        {categories.map((category) => {
-          const categoryTools = filteredTools.filter((t) => t.category === category.id);
-          if (categoryTools.length === 0) return null;
-
-          const IconComponent = iconMap[category.icon] || Code;
-
-          return (
-            <div key={category.id} id={category.id} className="scroll-mt-20 flex flex-col gap-4">
-              <div className="flex items-center gap-3 border-b border-border/80 pb-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                  <IconComponent className="h-5 w-5" />
-                </span>
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight text-foreground">{category.name}</h2>
-                  <p className="text-xs text-muted-foreground">{category.description}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {categoryTools.map((tool) => (
-                  <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group">
-                    <Card className="h-full border border-border hover:border-primary/50 hover:shadow-sm transition-all duration-300">
-                      <CardHeader className="flex flex-col h-full justify-between gap-4">
-                        <div>
-                          <CardTitle className="text-base font-semibold group-hover:text-primary transition-colors flex items-center justify-between w-full">
-                            <span>{tool.title}</span>
-                            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
-                          </CardTitle>
-                          <CardDescription className="text-muted-foreground text-xs mt-1.5 leading-relaxed line-clamp-2">
-                            {tool.description}
-                          </CardDescription>
-                        </div>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+        {/* Suggestion Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-4 max-w-2xl">
+          <span className="text-sm text-muted-foreground font-medium mr-2 hidden sm:inline-block">
+            Popular:
+          </span>
+          <button
+            onClick={() => handleSuggestionClick("JSON Formatter")}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:border-primary/50 text-xs font-medium text-foreground transition-all shadow-sm hover:shadow-md"
+          >
+            <Zap className="h-3 w-3 text-yellow-500" />
+            JSON Formatter
+          </button>
+          <button
+            onClick={() => handleSuggestionClick("Base64")}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:border-primary/50 text-xs font-medium text-foreground transition-all shadow-sm hover:shadow-md"
+          >
+            Base64 Converter
+          </button>
+          <button
+            onClick={() => handleSuggestionClick("JWT Decoder")}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:border-primary/50 text-xs font-medium text-foreground transition-all shadow-sm hover:shadow-md"
+          >
+            JWT Decoder
+          </button>
+          <button
+            onClick={() => handleSuggestionClick("Color")}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:border-primary/50 text-xs font-medium text-foreground transition-all shadow-sm hover:shadow-md"
+          >
+            Color Converter
+          </button>
+        </div>
       </div>
 
-      {filteredTools.length === 0 && (
-        <div className="text-center py-20 text-muted-foreground border border-dashed border-border rounded-lg">
-          <Search className="h-10 w-10 mx-auto opacity-35 mb-2" />
-          <p className="text-base">No tools match your query: &quot;{searchQuery}&quot;</p>
-          <button onClick={() => setSearchQuery("")} className="text-xs text-primary font-medium underline mt-1 hover:text-primary/80 cursor-pointer">
-            Clear search filter
-          </button>
+      {/* Content Area */}
+      {searchQuery ? (
+        /* Search Results View */
+        <div className="flex flex-col gap-6 w-full">
+          <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <Search className="h-4 w-4" />
+            <h2 className="text-lg font-semibold text-foreground">
+              Search Results
+            </h2>
+            <span className="text-sm">({filteredTools.length})</span>
+          </div>
+
+          {filteredTools.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredTools.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/60 rounded-3xl bg-muted/10">
+              <div className="h-16 w-16 bg-muted rounded-2xl flex items-center justify-center mb-4 text-muted-foreground">
+                <Search className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                No tools found
+              </h3>
+              <p className="text-muted-foreground max-w-md">
+                We couldn't find anything matching "{searchQuery}". Try using
+                different keywords or browse our categories.
+              </p>
+              <button
+                onClick={() => setSearchQuery("")}
+                className="mt-6 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Default Discovery View */
+        <div className="flex flex-col gap-16 w-full">
+          {/* Categories Grid (Moved to top) */}
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                  <Grid className="h-4 w-4" />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  Browse by Category
+                </h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {categories.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  toolCount={getToolsByCategory(category.id).length}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Most Popular / Featured */}
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center">
+                  <TrendingUp className="h-4 w-4" />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  Trending Tools
+                </h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {featuredTools.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </div>
+
+          {/* Recently Added (Simulated) */}
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-green-500/10 text-green-500 flex items-center justify-center">
+                  <Clock className="h-4 w-4" />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  Recently Added
+                </h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {trendingTools.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

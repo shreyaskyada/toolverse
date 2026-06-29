@@ -23,7 +23,7 @@ export default function ToolLayout({
   children,
 }: ToolLayoutProps) {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8 w-full">
       {/* Hero section */}
       <ToolHero
         title={tool.title}
@@ -33,19 +33,25 @@ export default function ToolLayout({
       />
 
       {/* Main Tool Area */}
-      {tool.fullWidth ? (
-        <div className="flex flex-col gap-10">
-          {/* Workspace (Full Width) */}
-          <div className="border border-border bg-card rounded-xl p-4 md:p-6 shadow-sm">
-            {children}
+      <div className={tool.fullWidth ? "flex flex-col gap-8" : "grid grid-cols-1 lg:grid-cols-3 gap-8"}>
+        {/* The Interactive Tool Workspace */}
+        <div className={tool.fullWidth ? "w-full" : "lg:col-span-2"}>
+          <div className="border border-border/80 bg-card rounded-2xl shadow-sm overflow-hidden flex flex-col h-full ring-1 ring-border/40 focus-within:ring-primary/20 transition-all duration-300">
+            {/* Standardized Tool Header/Toolbar area could go here if tools didn't render their own */}
+            <div className="p-4 sm:p-6 flex-1 flex flex-col">
+              {children}
+            </div>
           </div>
+        </div>
 
-          {/* About Content (Bottom) */}
-          <div className="border border-border bg-muted/20 rounded-xl p-4 md:p-6 text-sm">
-            <h3 className="font-semibold text-foreground text-base mb-3">
+        {/* Right Side / Bottom: Descriptive User Guide & About Content */}
+        <div className="flex flex-col gap-6">
+          <div className="border border-border/60 bg-muted/30 rounded-2xl p-5 md:p-6 text-sm">
+            <h3 className="font-semibold text-foreground text-lg tracking-tight mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-primary rounded-full inline-block"></span>
               About {tool.title}
             </h3>
-            <div className="text-muted-foreground leading-relaxed flex flex-col gap-4">
+            <div className="text-muted-foreground leading-relaxed flex flex-col gap-4 prose prose-sm dark:prose-invert">
               {ToolContent ? (
                 <ToolContent />
               ) : (
@@ -58,44 +64,21 @@ export default function ToolLayout({
               )}
             </div>
           </div>
+          
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Left Side: The Interactive Tool Workspace */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            <div className="border border-border bg-card rounded-xl p-4 md:p-6 shadow-sm">
-              {children}
-            </div>
-          </div>
+      </div>
 
-          {/* Right Side: Descriptive User Guide / About Content */}
-          <div className="flex flex-col gap-6">
-            <div className="border border-border bg-muted/20 rounded-xl p-4 md:p-6 text-sm">
-              <h3 className="font-semibold text-foreground text-base mb-3">
-                About {tool.title}
-              </h3>
-              <div className="text-muted-foreground leading-relaxed flex flex-col gap-4">
-                {ToolContent ? (
-                  <ToolContent />
-                ) : (
-                  <p>
-                    Use this {tool.title.toLowerCase()} tool to format, analyze,
-                    or generate data. This tool works completely offline in your
-                    web browser. No data is sent to our servers, keeping your
-                    information secure.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* FAQs */}
+      {faqs.length > 0 && (
+        <div className="mt-8">
+          <ToolFaq faqs={faqs} />
         </div>
       )}
 
-      {/* FAQs */}
-      <ToolFaq faqs={faqs} />
-
       {/* Related tools */}
-      <RelatedTools relatedTools={relatedTools} />
+      <div className="mt-12 pt-8 border-t border-border/50">
+        <RelatedTools relatedTools={relatedTools} />
+      </div>
     </div>
   );
 }
