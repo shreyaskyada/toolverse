@@ -186,4 +186,13 @@ export const tools: Tool[] = [
     featured: true,
     fullWidth: true,
   },
+  {
+    slug: "certificate-generator",
+    title: "Certificate Generator",
+    description:
+      "Design and generate custom certificates of achievement instantly. Download as high-quality PNG images.",
+    category: "design-color",
+    featured: false,
+    fullWidth: true,
+  },
 ];

@@ -55,6 +55,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "text-reverser": dynamic(() => import("../../../tools/text-reverser/component")),
   "list-randomizer": dynamic(() => import("../../../tools/list-randomizer/component")),
   "number-randomizer": dynamic(() => import("../../../tools/number-randomizer/component")),
+  "certificate-generator": dynamic(() => import("../../../tools/certificate-generator/component")),
 };
 
 export default async function ToolPage({ params }: Props) {
