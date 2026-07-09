@@ -1,0 +1,24 @@
+import * as React from "react"
+import { TextInput, type TextInputProps } from "react-native"
+import { cn } from "../../lib/utils"
+
+export interface InputProps extends TextInputProps {}
+
+const Input = React.forwardRef<React.ElementRef<typeof TextInput>, InputProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <TextInput
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 text-base text-foreground",
+          className
+        )}
+        placeholderTextColor="#9ca3af"
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+Input.displayName = "Input"
+
+export { Input }
