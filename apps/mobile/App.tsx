@@ -11,15 +11,34 @@ import { Input } from './components/ui/input';
 import { useColorScheme } from 'nativewind';
 import Svg, { LinearGradient, Stop, Text as SvgText, Defs } from 'react-native-svg';
 
+import JsonFormatterScreen from './tools/json-formatter/screen';
+
 const sampleTools = [
-  { id: 1, title: 'JSON Formatter', desc: 'Format and validate your JSON data instantly.', category: 'Dev' },
-  { id: 2, title: 'Regex Tester', desc: 'Test and debug your regular expressions.', category: 'Text' },
-  { id: 3, title: 'Base64 Encoder', desc: 'Encode and decode strings to Base64.', category: 'Crypto' },
+  { id: 'json-formatter', title: 'JSON Formatter', desc: 'Format and validate your JSON data instantly.', category: 'Dev' },
+  { id: 'regex-tester', title: 'Regex Tester', desc: 'Test and debug your regular expressions.', category: 'Text' },
+  { id: 'base64-encoder', title: 'Base64 Encoder', desc: 'Encode and decode strings to Base64.', category: 'Crypto' },
 ];
 
 function AppContent() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const [activeTool, setActiveTool] = React.useState<string | null>(null);
+
+  if (activeTool === 'json-formatter') {
+    return (
+      <View style={{ flex: 1, backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}>
+        <SafeAreaView edges={['top']} style={{ backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}>
+          <View className="flex-row items-center px-4 h-12 border-b border-border bg-card/50">
+            <Pressable onPress={() => setActiveTool(null)} style={({pressed}) => [{ opacity: pressed ? 0.7 : 1 }]}>
+              <Text className="text-primary font-medium text-sm">← Back</Text>
+            </Pressable>
+            <Text className="text-muted-foreground text-xs ml-3">Home  ›  Developer Tools  ›  JSON Formatter</Text>
+          </View>
+        </SafeAreaView>
+        <JsonFormatterScreen />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView 
@@ -112,7 +131,7 @@ function AppContent() {
                 <CardDescription className="mt-1.5 font-sans text-sm text-muted-foreground">{tool.desc}</CardDescription>
               </CardHeader>
               <CardFooter className="justify-end p-5 pt-0">
-                <Button variant="ghost" size="sm" className="px-3">
+                <Button variant="ghost" size="sm" className="px-3" onPress={() => setActiveTool(tool.id)}>
                   <Text className="font-sans font-medium text-primary">Open Tool</Text>
                 </Button>
               </CardFooter>

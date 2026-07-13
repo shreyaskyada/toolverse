@@ -1,0 +1,91 @@
+import { useReducer, useCallback, useEffect } from 'react';
+import { JsonFormatterState, JsonFormatterAction } from './types';
+import { DEFAULT_SPACES } from './constants';
+import { prettifyJson, minifyJson, parseJsonError, parseJsonSafely, getJsonStats } from './engine';
+
+const initialState: JsonFormatterState = {
+  input: '',
+  output: '',
+  error: null,
+  parsedData: null,
+  stats: null,
+  options: {
+    spaces: 2, // 'tab' or number
+  },
+};
+
+function reducer(state: JsonFormatterState, action: JsonFormatterAction): JsonFormatterState {
+  switch (action.type) {
+    case 'SET_INPUT': {
+      const parsed = parseJsonSafely(action.payload);
+      return {
+        ...state,
+        input: action.payload,
+        error: parseJsonError(action.payload),
+        parsedData: parsed,
+        stats: getJsonStats(action.payload, parsed),
+        output: action.payload.trim() === '' ? '' : state.output,
+      };
+    }
+    case 'SET_SPACES':
+      return {
+        ...state,
+        options: {
+          ...state.options,
+          spaces: action.payload,
+        },
+      };
+    case 'FORMAT':
+      if (state.error || !state.input.trim()) return state;
+      try {
+        return {
+          ...state,
+          output: prettifyJson(state.input, state.options.spaces),
+          error: null,
+        };
+      } catch (e: any) {
+        return { ...state, error: e.message };
+      }
+    case 'MINIFY':
+      if (state.error || !state.input.trim()) return state;
+      try {
+        return {
+          ...state,
+          output: minifyJson(state.input),
+          error: null,
+        };
+      } catch (e: any) {
+        return { ...state, error: e.message };
+      }
+    case 'VALIDATE':
+      return {
+        ...state,
+        error: parseJsonError(state.input),
+      };
+    case 'CLEAR':
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+export function useJsonFormatter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const setInput = useCallback((input: string) => dispatch({ type: 'SET_INPUT', payload: input }), []);
+  const setSpaces = useCallback((spaces: number | 'tab') => dispatch({ type: 'SET_SPACES', payload: spaces }), []);
+  const format = useCallback(() => dispatch({ type: 'FORMAT' }), []);
+  const minify = useCallback(() => dispatch({ type: 'MINIFY' }), []);
+  const validate = useCallback(() => dispatch({ type: 'VALIDATE' }), []);
+  const clear = useCallback(() => dispatch({ type: 'CLEAR' }), []);
+
+  return {
+    state,
+    setInput,
+    setSpaces,
+    format,
+    minify,
+    validate,
+    clear,
+  };
+}

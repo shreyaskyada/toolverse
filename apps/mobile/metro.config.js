@@ -8,8 +8,29 @@ const path = require('path');
  *
  * @type {import('@react-native/metro-config').MetroConfig}
  */
+const workspaceRoot = path.resolve(__dirname, '../..');
+const projectRoot = __dirname;
+
 const config = {
-  watchFolders: [path.resolve(__dirname, '../../node_modules')],
+  watchFolders: [workspaceRoot],
+  resolver: {
+    nodeModulesPaths: [
+      path.resolve(projectRoot, 'node_modules'),
+      path.resolve(workspaceRoot, 'node_modules'),
+    ],
+    unstable_enableSymlinks: true,
+    unstable_enablePackageExports: true,
+    resolveRequest: (context, moduleName, platform) => {
+      if (moduleName === 'react' || moduleName === 'react-native') {
+        return context.resolveRequest(
+          context,
+          path.resolve(projectRoot, 'node_modules', moduleName),
+          platform
+        );
+      }
+      return context.resolveRequest(context, moduleName, platform);
+    },
+  },
 };
 
 module.exports = withNativeWind(mergeConfig(getDefaultConfig(__dirname), config), { input: './global.css' });
