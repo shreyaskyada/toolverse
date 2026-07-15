@@ -8,7 +8,7 @@ import { Sparkles, Minimize2, ShieldCheck } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 
 const sampleJson = {
-  name: 'AllYourTools',
+  name: 'Toolverse',
   version: '1.0.0',
   features: ['offline processing', 'client-side validation', 'responsive UI'],
   active: true,

@@ -23,6 +23,8 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion';
 import { tools } from '@/config/tools';
+import { categoryThemes } from '@/config/categories';
+import { cn } from '@/lib/utils';
 
 export function JsonFormatterTool() {
   const { state, setInput, setSpaces, format, minify, validate, clear } = useJsonFormatter();
@@ -30,7 +32,7 @@ export function JsonFormatterTool() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const sampleJson = {
-    name: "AllYourTools",
+    name: "Toolverse",
     version: "1.0.0",
     description: "Multi-tool web app suite",
     features: ["offline processing", "client-side validation", "responsive UI"],
@@ -115,22 +117,42 @@ export function JsonFormatterTool() {
     .filter((t) => t.category === 'developer-tools' && t.slug !== 'json-formatter')
     .slice(0, 3);
 
-  return (
-    <Container className="py-10 flex-1">
-      {/* Hero Header */}
-      <div className="mb-8">
-        <span className="inline-flex items-center px-3 py-1 rounded-md bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-4">
-          Developer Tools
-        </span>
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-          JSON Formatter
-        </h1>
-        <p className="mt-2 text-muted-foreground text-base md:text-lg max-w-2xl">
-          Format and validate JSON instantly.
-        </p>
-      </div>
+  const theme = categoryThemes['developer-tools'] || {
+    color: "from-primary to-primary/80",
+    bgGlow: "",
+    iconBg: "bg-primary/10 text-primary",
+    iconColor: "text-primary",
+    borderHover: "",
+    accentColor: "slate",
+  };
 
-      <hr className="border-border mb-8" />
+  return (
+    <div className="relative overflow-hidden flex-grow flex flex-col">
+      {/* Background Radial Glow Effect */}
+      <div className={cn(
+        "absolute -top-40 -left-40 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-20 dark:opacity-30 bg-gradient-to-r",
+        theme.color
+      )} />
+
+      <Container className="py-10 flex-grow relative z-10">
+        {/* Hero Header */}
+        <div className="mb-8">
+          <span className={cn(
+            "inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wider mb-4 transition-colors",
+            theme.iconBg,
+            theme.iconColor
+          )}>
+            Developer Tools
+          </span>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+            JSON Formatter
+          </h1>
+          <p className="mt-2 text-muted-foreground text-base md:text-lg max-w-2xl">
+            Format and validate JSON instantly.
+          </p>
+        </div>
+
+        <hr className="border-border mb-8" />
 
       {/* Tool Area */}
       <div className="bg-card border border-border rounded-2xl p-6 mb-12">
@@ -404,6 +426,7 @@ export function JsonFormatterTool() {
           </div>
         </div>
       )}
-    </Container>
+      </Container>
+    </div>
   );
 }

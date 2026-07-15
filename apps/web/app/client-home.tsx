@@ -2,18 +2,53 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Tool } from "@/types/tool";
-import { Category } from "@/config/categories";
-import { Search, Sparkles, TrendingUp, Clock, Grid, Zap } from "lucide-react";
+import { Category, categoryThemes } from "@/config/categories";
+import {
+  Search,
+  Sparkles,
+  Grid,
+  Zap,
+  Code,
+  FileText,
+  Palette,
+  Calculator,
+  Shield,
+  Wrench,
+  Image as ImageIcon,
+  ArrowRight,
+} from "lucide-react";
 import ToolCard from "@/components/tools/ToolCard";
-import CategoryCard from "@/components/tools/CategoryCard";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface ClientHomeProps {
   tools: Tool[];
   categories: Category[];
 }
 
-// Extracted Search Input Component to isolate animation re-renders
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Code,
+  FileText,
+  Palette,
+  Calculator,
+  Shield,
+  Wrench,
+  Image: ImageIcon,
+};
+
+const pillActiveStyles: Record<string, string> = {
+  "all": "bg-foreground text-background border-foreground dark:bg-foreground dark:text-background dark:border-foreground",
+  "developer-tools": "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 dark:bg-blue-500/15 shadow-[0_0_15px_rgba(59,130,246,0.12)]",
+  "text-content": "border-violet-500 bg-violet-500/10 text-violet-600 dark:text-violet-400 dark:bg-violet-500/15 shadow-[0_0_15px_rgba(139,92,246,0.12)]",
+  "image-tools": "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 dark:bg-emerald-500/15 shadow-[0_0_15px_rgba(16,185,129,0.12)]",
+  "design-color": "border-pink-500 bg-pink-500/10 text-pink-600 dark:text-pink-400 dark:bg-pink-500/15 shadow-[0_0_15px_rgba(244,63,94,0.12)]",
+  "math-calc": "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400 dark:bg-amber-500/15 shadow-[0_0_15px_rgba(245,158,11,0.12)]",
+  "security-tools": "border-red-500 bg-red-500/10 text-red-600 dark:text-red-400 dark:bg-red-500/15 shadow-[0_0_15px_rgba(239,68,68,0.12)]",
+  "utility-tools": "border-teal-500 bg-teal-500/10 text-teal-600 dark:text-teal-400 dark:bg-teal-500/15 shadow-[0_0_15px_rgba(20,184,166,0.12)]",
+};
+
+// Extracted Search Input Component
 function AnimatedSearchInput({
   searchQuery,
   setSearchQuery,
@@ -97,6 +132,7 @@ function AnimatedSearchInput({
 export default function ClientHome({ tools, categories }: ClientHomeProps) {
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Sync search query if URL changes
@@ -116,31 +152,37 @@ export default function ClientHome({ tools, categories }: ClientHomeProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const filteredTools = tools.filter((tool) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      tool.title.toLowerCase().includes(query) ||
-      tool.description.toLowerCase().includes(query) ||
-      tool.category.toLowerCase().includes(query)
-    );
-  });
+  const filteredTools = useMemo(() => {
+    return tools.filter((tool) => {
+      // 1. Filter by category first if a specific one is selected
+      if (activeCategory !== "all" && tool.category !== activeCategory) {
+        return false;
+      }
+      // 2. Filter by search query
+      const query = searchQuery.toLowerCase();
+      return (
+        tool.title.toLowerCase().includes(query) ||
+        tool.description.toLowerCase().includes(query) ||
+        tool.category.toLowerCase().includes(query)
+      );
+    });
+  }, [tools, searchQuery, activeCategory]);
 
   const getToolsByCategory = (categoryId: string) => {
     return tools.filter((t) => t.category === categoryId);
   };
-
-  const featuredTools = tools.filter((t) => t.featured).slice(0, 4);
-  const trendingTools = tools.slice(4, 8);
 
   const handleSuggestionClick = (query: string) => {
     setSearchQuery(query);
     inputRef.current?.focus();
   };
 
+  const activeTheme = categoryThemes[activeCategory] || null;
+
   return (
-    <div className="flex flex-col gap-16 pb-10">
+    <div className="flex flex-col gap-14 pb-10">
       {/* Hero Search Section */}
-      <div className="flex flex-col items-center text-center gap-6 max-w-4xl mx-auto pt-10 md:pt-20 px-4 w-full">
+      <div className="flex flex-col items-center text-center gap-6 max-w-4xl mx-auto pt-6 md:pt-14 px-4 w-full relative">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border/50 text-sm font-medium text-muted-foreground mb-2">
           <Sparkles className="h-4 w-4 text-primary" />
           <span>Your all-in-one workspace</span>
@@ -161,7 +203,7 @@ export default function ClientHome({ tools, categories }: ClientHomeProps) {
         />
 
         {/* Suggestion Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mt-4 max-w-2xl">
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-2 max-w-2xl">
           <span className="text-sm text-muted-foreground font-medium mr-2 hidden sm:inline-block">
             Popular:
           </span>
@@ -184,119 +226,132 @@ export default function ClientHome({ tools, categories }: ClientHomeProps) {
           >
             JWT Decoder
           </button>
-          <button
-            onClick={() => handleSuggestionClick("Color")}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:border-primary/50 text-xs font-medium text-foreground transition-all shadow-sm hover:shadow-md"
-          >
-            Color Converter
-          </button>
         </div>
       </div>
 
-      {/* Content Area */}
-      {searchQuery ? (
-        /* Search Results View */
-        <div className="flex flex-col gap-6 w-full">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <Search className="h-4 w-4" />
-            <h2 className="text-lg font-semibold text-foreground">
-              Search Results
+      {/* Interactive Category Tabs Filter */}
+      <div className="w-full border-y border-border/40 py-5 bg-muted/5 flex items-center justify-center">
+        <div className="flex flex-wrap items-center justify-center gap-2 px-4 max-w-7xl w-full">
+          {/* All Tools Pill */}
+          <button
+            onClick={() => {
+              setActiveCategory("all");
+            }}
+            className={cn(
+              "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-border/70 bg-card hover:bg-muted/50 transition-all duration-300 shadow-2xs cursor-pointer",
+              activeCategory === "all" ? pillActiveStyles["all"] : "text-muted-foreground"
+            )}
+          >
+            <Grid className="h-4 w-4" />
+            All Tools
+            <span className={cn(
+              "inline-flex items-center justify-center px-1.5 py-0.5 rounded-md text-[10px] font-bold",
+              activeCategory === "all" ? "bg-background/25 text-foreground" : "bg-muted text-muted-foreground"
+            )}>
+              {tools.length}
+            </span>
+          </button>
+
+          {/* Individual Category Pills */}
+          {categories.map((category) => {
+            const IconComponent = iconMap[category.icon] || Code;
+            const count = getToolsByCategory(category.id).length;
+            const isActive = activeCategory === category.id;
+
+            return (
+              <button
+                key={category.id}
+                onClick={() => {
+                  setActiveCategory(category.id);
+                }}
+                className={cn(
+                  "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-border/70 bg-card hover:bg-muted/50 transition-all duration-300 shadow-2xs cursor-pointer",
+                  isActive ? pillActiveStyles[category.id] : "text-muted-foreground"
+                )}
+              >
+                <IconComponent className="h-4 w-4" />
+                {category.name}
+                <span className={cn(
+                  "inline-flex items-center justify-center px-1.5 py-0.5 rounded-md text-[10px] font-bold",
+                  isActive 
+                    ? "bg-foreground/10 dark:bg-foreground/15 text-current" 
+                    : "bg-muted text-muted-foreground"
+                )}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Content Area - Always displays matching tools in category grid */}
+      <div className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/30">
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-xl font-extrabold tracking-tight text-foreground">
+              {activeCategory === "all" 
+                ? "All Tools" 
+                : categories.find(c => c.id === activeCategory)?.name || "Tools"}
             </h2>
-            <span className="text-sm">({filteredTools.length})</span>
+            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-xs font-bold">
+              {filteredTools.length}
+            </span>
           </div>
 
-          {filteredTools.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredTools.map((tool) => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/60 rounded-3xl bg-muted/10">
-              <div className="h-16 w-16 bg-muted rounded-2xl flex items-center justify-center mb-4 text-muted-foreground">
-                <Search className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">
-                No tools found
-              </h3>
-              <p className="text-muted-foreground max-w-md">
-                We couldn't find anything matching "{searchQuery}". Try using
-                different keywords or browse our categories.
-              </p>
-              <button
-                onClick={() => setSearchQuery("")}
-                className="mt-6 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-              >
-                Clear Search
-              </button>
-            </div>
+          {/* Link to Dedicated Category Page */}
+          {activeCategory !== "all" && (
+            <Link
+              href={`/category/${activeCategory}`}
+              className={cn(
+                "inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-all group",
+                activeTheme ? `hover:${activeTheme.iconColor}` : ""
+              )}
+            >
+              View Category Page
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           )}
         </div>
-      ) : (
-        /* Default Discovery View */
-        <div className="flex flex-col gap-16 w-full">
-          {/* Categories Grid (Moved to top) */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                  <Grid className="h-4 w-4" />
-                </div>
-                <h2 className="text-xl font-bold tracking-tight text-foreground">
-                  Browse by Category
-                </h2>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {categories.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  toolCount={getToolsByCategory(category.id).length}
-                />
-              ))}
-            </div>
-          </div>
 
-          {/* Most Popular / Featured */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4" />
-                </div>
-                <h2 className="text-xl font-bold tracking-tight text-foreground">
-                  Trending Tools
-                </h2>
-              </div>
+        {filteredTools.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {filteredTools.map((tool) => (
+              <ToolCard key={tool.slug} tool={tool} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center border border-dashed border-border/60 rounded-3xl bg-muted/5 max-w-xl mx-auto w-full">
+            <div className="h-14 w-14 bg-muted/80 rounded-2xl flex items-center justify-center mb-4 text-muted-foreground">
+              <Search className="h-6 w-6" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {featuredTools.map((tool) => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
+            <h3 className="text-lg font-bold text-foreground mb-1">
+              No tools found
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-xs mb-6 leading-relaxed">
+              We couldn't find any utilities matching "{searchQuery}" under this filter. Try clearing the search or category filter.
+            </p>
+            <div className="flex gap-3">
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="px-4 py-2 bg-foreground text-background dark:bg-foreground dark:text-background rounded-xl text-sm font-semibold hover:bg-foreground/90 transition-all shadow-sm"
+                >
+                  Clear Search
+                </button>
+              )}
+              {activeCategory !== "all" && (
+                <button
+                  onClick={() => setActiveCategory("all")}
+                  className="px-4 py-2 border border-border/80 bg-card text-foreground rounded-xl text-sm font-semibold hover:bg-muted/50 transition-all shadow-sm"
+                >
+                  All Categories
+                </button>
+              )}
             </div>
           </div>
-
-          {/* Recently Added (Simulated) */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-green-500/10 text-green-500 flex items-center justify-center">
-                  <Clock className="h-4 w-4" />
-                </div>
-                <h2 className="text-xl font-bold tracking-tight text-foreground">
-                  Recently Added
-                </h2>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {trendingTools.map((tool) => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

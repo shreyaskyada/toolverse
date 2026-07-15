@@ -17,7 +17,7 @@ export default function Footer() {
               <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
                 <Wrench className="h-3 w-3" />
               </span>
-              <span>AllYourTools</span>
+              <span>Toolverse</span>
             </Link>
             <p className="text-xs max-w-xs">
               A comprehensive suite of free, high-performance web utilities for
@@ -113,7 +113,7 @@ export default function Footer() {
 
         <div className="mt-8 border-t border-border/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs">
-            &copy; {new Date().getFullYear()} AllYourTools. All rights reserved.
+            &copy; {new Date().getFullYear()} Toolverse. All rights reserved.
           </p>
           <p className="text-xs flex items-center gap-1">
             Privacy First &bull; 100% Free &bull; Open Source
