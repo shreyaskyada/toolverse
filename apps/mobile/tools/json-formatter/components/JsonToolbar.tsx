@@ -1,87 +1,50 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
+import { ChevronDown, Trash2, FlaskConical } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
 
 interface JsonToolbarProps {
-  onFormat: () => void;
-  onMinify: () => void;
   onClear: () => void;
-  disabled: boolean;
-  spaces: number;
-  onSpacesChange: (spaces: number) => void;
+  spaces: number | 'tab';
+  onSpacesChange: (spaces: number | 'tab') => void;
+  onLoadSample: () => void;
 }
 
-export function JsonToolbar({ onFormat, onMinify, onClear, disabled, spaces, onSpacesChange }: JsonToolbarProps) {
+export function JsonToolbar({ onClear, spaces, onSpacesChange, onLoadSample }: JsonToolbarProps) {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   return (
-    <View style={styles.container}>
-      <View style={styles.actions}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 14, marginBottom: 14, borderBottomWidth: 1, borderBottomColor: isDark ? '#27272a' : '#f0f0f0' }}>
+      {/* Indent picker */}
+      <Pressable
+        onPress={() => onSpacesChange(spaces === 2 ? 4 : spaces === 4 ? 'tab' : 2)}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: isDark ? '#1c1c1e' : '#f4f4f5', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8 }}
+      >
+        <Text style={{ fontSize: 12, color: isDark ? '#a1a1aa' : '#71717a', fontWeight: '500' }}>Indent</Text>
+        <Text style={{ fontSize: 12, color: isDark ? '#fafafa' : '#18181b', fontWeight: '600' }}>
+          {spaces === 'tab' ? 'Tab' : `${spaces} sp`}
+        </Text>
+        <ChevronDown size={12} color={isDark ? '#71717a' : '#a1a1aa'} />
+      </Pressable>
+
+      {/* Right actions */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <Pressable
-          style={[styles.button, styles.primaryButton, disabled && styles.disabledButton]}
-          onPress={onFormat}
-          disabled={disabled}
+          onPress={onLoadSample}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: isDark ? '#1c1c1e' : '#f4f4f5', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8 }}
         >
-          <Text style={[styles.buttonText, styles.primaryButtonText]}>Format</Text>
+          <FlaskConical size={12} color={isDark ? '#a1a1aa' : '#71717a'} />
+          <Text style={{ fontSize: 12, color: isDark ? '#fafafa' : '#18181b', fontWeight: '500' }}>Sample</Text>
         </Pressable>
-        
         <Pressable
-          style={[styles.button, styles.secondaryButton, disabled && styles.disabledButton]}
-          onPress={onMinify}
-          disabled={disabled}
+          onPress={onClear}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: 'rgba(239,68,68,0.1)', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8 }}
         >
-          <Text style={[styles.buttonText, styles.secondaryButtonText]}>Minify</Text>
+          <Trash2 size={12} color="#ef4444" />
+          <Text style={{ fontSize: 12, color: '#ef4444', fontWeight: '500' }}>Clear</Text>
         </Pressable>
       </View>
-      
-      <Pressable
-        style={[styles.button, styles.dangerButton]}
-        onPress={onClear}
-      >
-        <Text style={[styles.buttonText, styles.dangerButtonText]}>Clear</Text>
-      </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  button: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  primaryButton: {
-    backgroundColor: '#fafafa',
-  },
-  secondaryButton: {
-    backgroundColor: '#27272a',
-  },
-  dangerButton: {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  primaryButtonText: {
-    color: '#09090b',
-  },
-  secondaryButtonText: {
-    color: '#fafafa',
-  },
-  dangerButtonText: {
-    color: '#ef4444',
-  },
-});

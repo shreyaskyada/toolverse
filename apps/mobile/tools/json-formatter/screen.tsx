@@ -1,18 +1,15 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { JsonFormatterTool } from './JsonFormatterTool';
+import { useColorScheme } from 'nativewind';
 
 export default function JsonFormatterScreen() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={{ flex: 1, backgroundColor: isDark ? '#0f172a' : '#ffffff' }}>
       <JsonFormatterTool />
-    </SafeAreaView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-});

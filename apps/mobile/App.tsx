@@ -23,22 +23,16 @@ function AppContent() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const [activeTool, setActiveTool] = React.useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = React.useState<string>('All Tools');
 
-  if (activeTool === 'json-formatter') {
-    return (
-      <View style={{ flex: 1, backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}>
-        <SafeAreaView edges={['top']} style={{ backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}>
-          <View className="flex-row items-center px-4 h-12 border-b border-border bg-card/50">
-            <Pressable onPress={() => setActiveTool(null)} style={({pressed}) => [{ opacity: pressed ? 0.7 : 1 }]}>
-              <Text className="text-primary font-medium text-sm">← Back</Text>
-            </Pressable>
-            <Text className="text-muted-foreground text-xs ml-3">Home  ›  Developer Tools  ›  JSON Formatter</Text>
-          </View>
-        </SafeAreaView>
-        <JsonFormatterScreen />
-      </View>
-    );
-  }
+  const filteredTools = sampleTools.filter(tool => {
+    if (activeCategory === 'All Tools') return true;
+    if (activeCategory === 'Developer' && tool.category === 'Dev') return true;
+    if (activeCategory === 'Text' && tool.category === 'Text') return true;
+    if (activeCategory === 'Images' && tool.category === 'Images') return true;
+    if (activeCategory === 'Crypto' && tool.category === 'Crypto') return true;
+    return false;
+  });
 
   return (
     <SafeAreaView 
@@ -98,47 +92,113 @@ function AppContent() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 px-4 py-6" contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Search */}
-        <View className="mb-8">
-          <Text className="text-3xl font-bold text-foreground mb-2 font-sans tracking-tight">Find your tool</Text>
-          <Text className="text-muted-foreground mb-5 text-base font-sans">
-            Everything you need in one place. Ported directly from the web design system.
-          </Text>
-          <View className="relative flex-row items-center">
-            <Search size={20} color="#9ca3af" style={{ position: 'absolute', left: 14, zIndex: 10 }} />
-            <Input className="pl-11 h-14 rounded-xl bg-card border-border font-sans text-base" placeholder="Search tools..." />
+      {activeTool ? (
+        <View style={{ flex: 1, backgroundColor: isDarkMode ? '#0a0a0b' : '#f8f8f9' }}>
+          {/* Breadcrumb bar */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              height: 44,
+              backgroundColor: isDarkMode ? '#111113' : '#ffffff',
+              borderBottomWidth: 1,
+              borderBottomColor: isDarkMode ? '#1e1e20' : '#f0f0f0',
+            }}
+          >
+            {/* Back button */}
+            <Pressable
+              onPress={() => setActiveTool(null)}
+              style={({ pressed }) => ({
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+                opacity: pressed ? 0.5 : 1,
+                paddingRight: 8,
+                paddingVertical: 4,
+              })}
+            >
+              <Text style={{ fontSize: 18, lineHeight: 20, color: '#6366f1', marginTop: -1 }}>‹</Text>
+              <Text style={{ fontSize: 13, fontWeight: '500', color: '#6366f1' }}>Home</Text>
+            </Pressable>
+
+            {/* Crumbs */}
+            {activeTool === 'json-formatter' && (
+              <>
+                {/* Separator dot */}
+                <View style={{ width: 3, height: 3, borderRadius: 2, backgroundColor: isDarkMode ? '#3f3f46' : '#d4d4d8', marginHorizontal: 6 }} />
+                <Text style={{ fontSize: 13, color: isDarkMode ? '#52525b' : '#a1a1aa' }}>Dev Tools</Text>
+                <View style={{ width: 3, height: 3, borderRadius: 2, backgroundColor: isDarkMode ? '#3f3f46' : '#d4d4d8', marginHorizontal: 6 }} />
+                <Text style={{ fontSize: 13, fontWeight: '600', color: isDarkMode ? '#e4e4e7' : '#18181b' }}>
+                  JSON Formatter
+                </Text>
+              </>
+            )}
           </View>
-        </View>
 
-        {/* Categories */}
-        <View className="flex-row flex-wrap gap-2.5 mb-6">
-          <Button variant="default" size="sm" className="rounded-full"><Text className="font-sans font-medium text-primary-foreground">All Tools</Text></Button>
-          <Button variant="outline" size="sm" className="rounded-full"><Text className="font-sans font-medium text-foreground">Developer</Text></Button>
-          <Button variant="outline" size="sm" className="rounded-full"><Text className="font-sans font-medium text-foreground">Text</Text></Button>
-          <Button variant="outline" size="sm" className="rounded-full"><Text className="font-sans font-medium text-foreground">Images</Text></Button>
+          {activeTool === 'json-formatter' ? (
+            <JsonFormatterScreen />
+          ) : (
+            <View className="flex-1 items-center justify-center p-4">
+              <Text className="text-xl font-bold text-foreground font-sans text-center mb-2">Coming Soon</Text>
+              <Text className="text-muted-foreground text-center font-sans">This tool is not yet available on mobile.</Text>
+            </View>
+          )}
         </View>
+      ) : (
+        <ScrollView className="flex-1 px-4 py-6" contentContainerStyle={{ paddingBottom: 40 }}>
+          {/* Search */}
+          <View className="mb-8">
+            <Text className="text-3xl font-bold text-foreground mb-2 font-sans tracking-tight">Find your tool</Text>
+            <Text className="text-muted-foreground mb-5 text-base font-sans">
+              Everything you need in one place. Ported directly from the web design system.
+            </Text>
+            <View className="relative flex-row items-center">
+              <Search size={20} color="#9ca3af" style={{ position: 'absolute', left: 14, zIndex: 10 }} />
+              <Input className="pl-11 h-14 rounded-xl bg-card border-border font-sans text-base" placeholder="Search tools..." />
+            </View>
+          </View>
 
-        {/* Tool Cards */}
-        <View className="flex-col gap-5">
-          {sampleTools.map(tool => (
-            <Card key={tool.id} className="w-full bg-card border-border shadow-sm">
-              <CardHeader className="p-5">
-                <View className="flex-row items-center justify-between mb-3">
-                  <Badge variant="secondary" className="rounded-md px-2 py-0.5"><Text className="font-sans text-xs font-medium text-secondary-foreground">{tool.category}</Text></Badge>
-                </View>
-                <CardTitle className="font-sans text-xl tracking-tight">{tool.title}</CardTitle>
-                <CardDescription className="mt-1.5 font-sans text-sm text-muted-foreground">{tool.desc}</CardDescription>
-              </CardHeader>
-              <CardFooter className="justify-end p-5 pt-0">
-                <Button variant="ghost" size="sm" className="px-3" onPress={() => setActiveTool(tool.id)}>
-                  <Text className="font-sans font-medium text-primary">Open Tool</Text>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </View>
-      </ScrollView>
+          {/* Categories */}
+          <View className="flex-row flex-wrap gap-2.5 mb-6">
+            {['All Tools', 'Developer', 'Text', 'Crypto', 'Images'].map(cat => (
+              <Button 
+                key={cat}
+                variant={activeCategory === cat ? "default" : "outline"} 
+                size="sm" 
+                className="rounded-full"
+                onPress={() => setActiveCategory(cat)}
+              >
+                <Text className={`font-sans font-medium ${activeCategory === cat ? 'text-primary-foreground' : 'text-foreground'}`}>
+                  {cat}
+                </Text>
+              </Button>
+            ))}
+          </View>
+
+          {/* Tool Cards */}
+          <View className="flex-col gap-5">
+            {filteredTools.map(tool => (
+              <Pressable key={tool.id} onPress={() => setActiveTool(tool.id)}>
+                <Card className="w-full bg-card border-border shadow-sm">
+                  <CardHeader className="p-5">
+                    <View className="flex-row items-center justify-between mb-3">
+                      <Badge variant="secondary" className="rounded-md px-2 py-0.5"><Text className="font-sans text-xs font-medium text-secondary-foreground">{tool.category}</Text></Badge>
+                    </View>
+                    <CardTitle className="font-sans text-xl tracking-tight">{tool.title}</CardTitle>
+                    <CardDescription className="mt-1.5 font-sans text-sm text-muted-foreground">{tool.desc}</CardDescription>
+                  </CardHeader>
+                  <CardFooter className="justify-end p-5 pt-0">
+                    <Button variant="ghost" size="sm" className="px-3" onPress={() => setActiveTool(tool.id)}>
+                      <Text className="font-sans font-medium text-primary">Open Tool</Text>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </Pressable>
+            ))}
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
