@@ -1,6 +1,5 @@
 import { useReducer, useCallback, useEffect } from 'react';
 import { JsonFormatterState, JsonFormatterAction } from './types';
-import { DEFAULT_SPACES } from './constants';
 import { prettifyJson, minifyJson, parseJsonError, parseJsonSafely, getJsonStats } from './engine';
 
 const initialState: JsonFormatterState = {
@@ -21,7 +20,7 @@ function reducer(state: JsonFormatterState, action: JsonFormatterAction): JsonFo
       return {
         ...state,
         input: action.payload,
-        error: parseJsonError(action.payload),
+        error: null, // Clear error during typing to prevent immediate error flashing
         parsedData: parsed,
         stats: getJsonStats(action.payload, parsed),
         output: action.payload.trim() === '' ? '' : state.output,
@@ -36,8 +35,12 @@ function reducer(state: JsonFormatterState, action: JsonFormatterAction): JsonFo
         },
       };
     case 'FORMAT':
-      if (state.error || !state.input.trim()) return state;
+      if (!state.input.trim()) return state;
       try {
+        const errorMsg = parseJsonError(state.input);
+        if (errorMsg) {
+          return { ...state, error: errorMsg };
+        }
         return {
           ...state,
           output: prettifyJson(state.input, state.options.spaces),
@@ -47,8 +50,12 @@ function reducer(state: JsonFormatterState, action: JsonFormatterAction): JsonFo
         return { ...state, error: e.message };
       }
     case 'MINIFY':
-      if (state.error || !state.input.trim()) return state;
+      if (!state.input.trim()) return state;
       try {
+        const errorMsg = parseJsonError(state.input);
+        if (errorMsg) {
+          return { ...state, error: errorMsg };
+        }
         return {
           ...state,
           output: minifyJson(state.input),
@@ -78,6 +85,28 @@ export function useJsonFormatter() {
   const minify = useCallback(() => dispatch({ type: 'MINIFY' }), []);
   const validate = useCallback(() => dispatch({ type: 'VALIDATE' }), []);
   const clear = useCallback(() => dispatch({ type: 'CLEAR' }), []);
+
+  // Auto-format on change if input is valid JSON, and debounce invalid error alerts
+  useEffect(() => {
+    if (!state.input.trim()) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(state.input);
+      if (parsed && parseJsonError(state.input) === null) {
+        dispatch({ type: 'FORMAT' });
+      }
+    } catch {
+      // Don't show error immediately to allow typing
+    }
+
+    const timer = setTimeout(() => {
+      dispatch({ type: 'VALIDATE' });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [state.input, state.options.spaces]);
 
   return {
     state,
