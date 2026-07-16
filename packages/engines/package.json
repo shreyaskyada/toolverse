@@ -19,6 +19,7 @@
     "typescript": "5.9.2"
   },
   "dependencies": {
+    "heic2any": "^0.0.4",
     "react": "^19.2.0"
   }
 }
