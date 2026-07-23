@@ -112,7 +112,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t border-border/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs">
+          <p className="text-xs" suppressHydrationWarning>
             &copy; {new Date().getFullYear()} Toolverse. All rights reserved.
           </p>
           <p className="text-xs flex items-center gap-1">

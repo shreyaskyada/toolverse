@@ -17,6 +17,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  return categories.map((category) => ({
+    slug: category.id,
+  }));
+}
+
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
 
