@@ -76,16 +76,16 @@ export function AgeCalculatorTool() {
                   Zodiac & Birthday Info
                 </h3>
               </div>
-              <CardContent className="p-5 flex flex-col gap-4 text-sm">
-                <div className="flex justify-between items-center py-2 border-b border-border/40">
+              <CardContent className="p-5 flex flex-col gap-1.5 text-sm">
+                <div className="flex justify-between items-center py-1.5 border-b border-border/40">
                   <span className="text-muted-foreground font-medium">Born on:</span>
                   <span className="font-bold text-foreground">{state.result.dayOfWeek}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/40">
+                <div className="flex justify-between items-center py-1.5 border-b border-border/40">
                   <span className="text-muted-foreground font-medium">Sun Sign:</span>
                   <span className="font-bold text-amber-600 dark:text-amber-400">{state.result.zodiac}</span>
                 </div>
-                <div className="flex justify-between items-center py-2">
+                <div className="flex justify-between items-center py-1.5">
                   <span className="text-muted-foreground font-medium">Chinese Zodiac:</span>
                   <span className="font-bold text-amber-600 dark:text-amber-400">{state.result.chineseZodiac}</span>
                 </div>
@@ -197,50 +197,7 @@ export function AgeCalculatorTool() {
                 </div>
               </div>
 
-              {/* Life Milestone estimates */}
-              <div className="flex flex-col gap-4">
-                <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" /> Estimated Life Milestones
-                </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="border border-border/60 rounded-xl p-5 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0">
-                      <Heart className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Heartbeats</span>
-                      <span className="text-base font-extrabold text-foreground mt-1 block">
-                        {formattedStat(state.result.milestones.heartbeats)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="border border-border/60 rounded-xl p-5 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
-                      <Wind className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Breaths Taken</span>
-                      <span className="text-base font-extrabold text-foreground mt-1 block">
-                        {formattedStat(state.result.milestones.breaths)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="border border-border/60 rounded-xl p-5 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center flex-shrink-0">
-                      <Moon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Hours Slept</span>
-                      <span className="text-base font-extrabold text-foreground mt-1 block">
-                        {formattedStat(state.result.milestones.sleepHours)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </>
           ) : (
             <div className="text-center py-12 text-muted-foreground">
