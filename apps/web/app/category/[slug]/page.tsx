@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!category) return {};
 
   return {
-    title: `${category.name} Tools - Toolverse`,
+    title: `${category.name} Tools - Jumpytools`,
     description: category.description,
   };
 }

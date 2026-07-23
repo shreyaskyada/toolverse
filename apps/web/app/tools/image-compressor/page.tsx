@@ -3,7 +3,7 @@ import { ImageCompressorTool } from '@/modules/tools/image-compressor/ImageCompr
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Image Compressor | Toolverse',
+  title: 'Image Compressor | Jumpytools',
   description: 'Reduce image file size by customizing quality, scaling dimensions, and converting formats client-side instantly.',
 };
 

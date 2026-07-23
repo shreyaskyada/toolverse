@@ -3,7 +3,7 @@ import { ListRandomizerTool } from '@/modules/tools/list-randomizer/ListRandomiz
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'List Randomizer | Toolverse',
+  title: 'List Randomizer | Jumpytools',
   description: 'Shuffle and randomize lists instantly. Great for generating random selections or unbiased ordering.',
 };
 

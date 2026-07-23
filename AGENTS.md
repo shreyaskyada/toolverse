@@ -1,8 +1,8 @@
-# Toolverse Development Guide
+# Jumpytools Development Guide
 
 ## Project Overview
 
-Toolverse is a Turborepo project.
+Jumpytools is a Turborepo project.
 
 Platforms:
 
@@ -20,7 +20,7 @@ Never invent a different structure.
 # Repository Structure
 
 ```
-toolverse/
+jumpytools/
 
 apps/
 │

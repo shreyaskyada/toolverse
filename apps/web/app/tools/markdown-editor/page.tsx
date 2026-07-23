@@ -3,7 +3,7 @@ import { MarkdownEditorTool } from '@/modules/tools/markdown-editor/MarkdownEdit
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Markdown Editor & Previewer | Toolverse',
+  title: 'Markdown Editor & Previewer | Jumpytools',
   description: 'A fast, split-screen markdown editor with live HTML preview. Supports GitHub-flavored markdown, tables, and code blocks.',
 };
 

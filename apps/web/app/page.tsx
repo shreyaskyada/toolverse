@@ -6,7 +6,7 @@ import { tools } from "@/config/tools";
 import { categories } from "@/config/categories";
 
 export const metadata: Metadata = {
-  title: "Toolverse - Free Online Developer and Content Tools",
+  title: "Jumpytools - Free Online Developer and Content Tools",
   description: "Browse 100+ free online developer utilities, text formatting calculators, design tools, and security converters. Private, fast, and secure.",
 };
 
@@ -14,14 +14,14 @@ export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Toolverse",
-    url: "https://toolverse.app",
+    name: "Jumpytools",
+    url: "https://jumpytools.app",
     description: "Browse 100+ free online developer utilities, text formatting calculators, design tools, and security converters. Private, fast, and secure.",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://toolverse.app/tools/{search_term_string}"
+        urlTemplate: "https://jumpytools.app/tools/{search_term_string}"
       },
       "query-input": "required name=search_term_string"
     }

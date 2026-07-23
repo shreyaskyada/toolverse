@@ -65,7 +65,7 @@ function AppContent() {
                 x="0"
                 y="22"
               >
-                Toolverse
+                Jumpytools
               </SvgText>
             </Svg>
           </View>

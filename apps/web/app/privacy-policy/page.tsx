@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Toolverse",
-  description: "Privacy Policy for Toolverse",
+  title: "Privacy Policy - Jumpytools",
+  description: "Privacy Policy for Jumpytools",
 };
 
 export default function PrivacyPolicy() {
@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="text-2xl font-semibold mt-8 mb-4">1. Introduction</h2>
           <p>
-            Welcome to Toolverse ("we," "our," or "us"). We respect your privacy and are committed to protecting it through our compliance with this privacy policy. 
+            Welcome to Jumpytools ("we," "our," or "us"). We respect your privacy and are committed to protecting it through our compliance with this privacy policy. 
             This policy describes the types of information we may collect from you or that you may provide when you visit our website and our practices for collecting, using, maintaining, protecting, and disclosing that information.
           </p>
         </section>
@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="text-2xl font-semibold mt-8 mb-4">2. Client-Side Processing</h2>
           <p>
-            The core functionality of Toolverse operates entirely within your web browser (client-side). The text, files, and data you input into our tools are processed locally on your device and are <strong>never</strong> sent to our servers. We do not store, view, or analyze the data you process using our tools.
+            The core functionality of Jumpytools operates entirely within your web browser (client-side). The text, files, and data you input into our tools are processed locally on your device and are <strong>never</strong> sent to our servers. We do not store, view, or analyze the data you process using our tools.
           </p>
         </section>
 

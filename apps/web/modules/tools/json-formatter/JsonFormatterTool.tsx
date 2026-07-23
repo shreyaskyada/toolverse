@@ -23,7 +23,7 @@ export function JsonFormatterTool() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const sampleJson = {
-    name: "Toolverse",
+    name: "Jumpytools",
     version: "1.0.0",
     description: "Multi-tool web app suite",
     features: ["offline processing", "client-side validation", "responsive UI"],

@@ -1,8 +1,8 @@
-# Toolverse Architecture Rules
+# Jumpytools Architecture Rules
 
 ## Overview
 
-Toolverse is a Turborepo project containing:
+Jumpytools is a Turborepo project containing:
 
 - Next.js Web App
 - Expo React Native App
@@ -17,7 +17,7 @@ These rules MUST be followed for every new tool.
 # Repository Structure
 
 ```
-toolverse/
+jumpytools/
 
 apps/
 │

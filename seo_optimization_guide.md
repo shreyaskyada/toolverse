@@ -1,6 +1,6 @@
-# SEO Optimization Guide for Toolverse Tools
+# SEO Optimization Guide for Jumpytools Tools
 
-This guide provides a standardized SEO blueprint to optimize every tool in the Toolverse catalog. Following this checklist ensures search engines can easily discover, crawl, and rank each utility.
+This guide provides a standardized SEO blueprint to optimize every tool in the Jumpytools catalog. Following this checklist ensures search engines can easily discover, crawl, and rank each utility.
 
 ---
 
@@ -11,7 +11,7 @@ Every tool page must follow strict semantic HTML structures and metadata templat
 ### A. Meta Tags & Titles
 | Element | Recommended Length | Template Example |
 | :--- | :--- | :--- |
-| **Title Tag** | 50–60 characters | `[Tool Name] Online - Free & Instant \| Toolverse` <br> *Example:* `JSON Formatter Online - Free & Instant \| Toolverse` |
+| **Title Tag** | 50–60 characters | `[Tool Name] Online - Free & Instant \| Jumpytools` <br> *Example:* `JSON Formatter Online - Free & Instant \| Jumpytools` |
 | **Meta Description** | 120–155 characters | `Best online [Tool Name]. [Action verb] your [data/images/files] client-side instantly. 100% secure, private, and free to use.` |
 
 ### B. Heading (HTML5) Hierarchy
@@ -59,7 +59,7 @@ Structured data helps search engines understand the tool's exact function and di
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "JSON Formatter",
-  "url": "https://toolverse.one/tools/json-formatter",
+  "url": "https://jumpytools.one/tools/json-formatter",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "All",
   "browserRequirements": "Requires JavaScript. Requires HTML5.",

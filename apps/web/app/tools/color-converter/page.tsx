@@ -3,7 +3,7 @@ import { ColorConverterTool } from '@/modules/tools/color-converter/ColorConvert
 import { TOOL_METADATA } from '@repo/engines/color-converter';
 
 export const metadata: Metadata = {
-  title: `${TOOL_METADATA.title} Online - Free & Instant | Toolverse`,
+  title: `${TOOL_METADATA.title} Online - Free & Instant | Jumpytools`,
   description: TOOL_METADATA.description,
 };
 

@@ -98,7 +98,7 @@ export function TimezoneConverterTool() {
       const city = tz.split('/').pop()?.replace(/_/g, ' ') || tz;
       text += `- 🕒 ${city}: ${formatTimeTz(state.baseDate, tz)} (${getGmtOffset(state.baseDate, tz)})\n`;
     });
-    text += `\nConverted via Toolverse Timezone Converter`;
+    text += `\nConverted via Jumpytools Timezone Converter`;
     return text;
   };
 

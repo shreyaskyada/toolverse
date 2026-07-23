@@ -3,7 +3,7 @@ import { WordFrequencyAnalyzerTool } from '@/modules/tools/word-frequency-analyz
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Word Frequency Analyzer | Toolverse',
+  title: 'Word Frequency Analyzer | Jumpytools',
   description: 'Analyze text for keyword density, word frequencies, and find duplicate words instantly.',
 };
 

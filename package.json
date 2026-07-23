@@ -1,5 +1,5 @@
 {
-  "name": "toolverse",
+  "name": "jumpytools",
   "private": true,
   "scripts": {
     "build": "turbo run build",

@@ -3,7 +3,7 @@ import { NumberRandomizerTool } from '@/modules/tools/number-randomizer/NumberRa
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Random Number Generator | Toolverse',
+  title: 'Random Number Generator | Jumpytools',
   description: 'Generate truly random numbers or sequences instantly. Customize ranges, length, and formatting.',
 };
 

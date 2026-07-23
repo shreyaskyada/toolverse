@@ -6,7 +6,7 @@ export const STOP_WORDS = new Set([
   'over', 'after', 'before', 'no', 'not', 'only', 'other', 'some', 'such', 'too', 'very', 'can'
 ]);
 
-export const SAMPLE_TEXT = `Toolverse is an all-in-one developer and content analysis toolkit built for maximum speed and simplicity. It features multiple utilities that run entirely inside your browser, guaranteeing absolute data privacy.
+export const SAMPLE_TEXT = `Jumpytools is an all-in-one developer and content analysis toolkit built for maximum speed and simplicity. It features multiple utilities that run entirely inside your browser, guaranteeing absolute data privacy.
 
 When you analyze your documents here, your text is never uploaded to external servers. This makes it safe to count characters, inspect JSON payloads, generate UUID keys, or decode keys locally. Try typing your paragraphs here to analyze content readability!`;
 

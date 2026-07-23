@@ -62,8 +62,8 @@ export async function generateSampleJWT(secret: string, isExpired = false): Prom
     role: 'admin',
     iat: iat,
     exp: exp,
-    iss: 'toolverse.com',
-    aud: 'api.toolverse.com'
+    iss: 'jumpytools.com',
+    aud: 'api.jumpytools.com'
   };
   
   const base64UrlEncode = (obj: unknown) => {

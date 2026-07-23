@@ -1,7 +1,7 @@
 import { WordCounterTool } from '@/modules/tools/word-counter/WordCounterTool';
 
 export const metadata = {
-  title: 'Word Counter - Toolverse',
+  title: 'Word Counter - Jumpytools',
   description: 'Analyze and count words, characters, sentences, paragraphs in real-time.',
 };
 

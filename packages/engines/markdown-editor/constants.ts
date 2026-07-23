@@ -7,10 +7,10 @@ This is a fast, **split-screen** markdown editor with live HTML preview!
 - Bullet lists and numbered lists
 - Inline \`code\` blocks and fenced code snippets:
 \`\`\`javascript
-const greeting = "Hello, Toolverse!";
+const greeting = "Hello, Jumpytools!";
 console.log(greeting);
 \`\`\`
-- [Clickable links](https://toolverse.dev)
+- [Clickable links](https://jumpytools.dev)
 - Tables and quotes
 
 > "The best way to predict the future is to invent it." - Alan Kay

@@ -3,7 +3,7 @@ import { ImageConverterTool } from '@/modules/tools/image-converter/ImageConvert
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Image Converter | Toolverse',
+  title: 'Image Converter | Jumpytools',
   description: 'Convert images between JPEG, PNG, WebP, AVIF, GIF, BMP, and ICO formats client-side instantly with a live before-and-after preview.',
 };
 

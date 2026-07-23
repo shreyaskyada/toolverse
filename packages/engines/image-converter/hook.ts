@@ -27,7 +27,7 @@ export function useImageConverter() {
 
       if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
         try {
-          const heic2any = (await import('heic2any')).default;
+          const heic2any = (await import('heic2any') as any).default;
           const result = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
           const blob = Array.isArray(result) ? result[0] : result;
           if (!blob) throw new Error('Converted blob is empty');

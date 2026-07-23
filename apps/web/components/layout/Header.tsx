@@ -56,7 +56,7 @@ export default function Header() {
               <Wrench className="h-4.5 w-4.5" />
             </span>
             <span className="bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
-              Toolverse
+              Jumpytools
             </span>
           </Link>
 
