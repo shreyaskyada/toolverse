@@ -213,4 +213,13 @@ export const tools: Tool[] = [
     featured: true,
     fullWidth: true,
   },
+  {
+    slug: "age-calculator",
+    title: "Age Calculator",
+    description:
+      "Calculate your exact age in years, months, weeks, days, hours, and seconds. View your next birthday countdown, zodiac details, and life milestones.",
+    category: "math-calc",
+    featured: true,
+    fullWidth: false,
+  },
 ];
