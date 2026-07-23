@@ -130,7 +130,7 @@ export const tools: Tool[] = [
       "Convert between HEX, RGB, HSL, and CMYK color formats instantly. Visualize colors and generate corresponding CSS code.",
     category: "design-color",
     featured: true,
-    fullWidth: false,
+    fullWidth: true,
   },
   {
     slug: "lorem-ipsum-generator",
